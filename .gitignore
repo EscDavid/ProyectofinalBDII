@@ -72,17 +72,6 @@ vite.config.js.timestamp*
 *.svg?component
 
 ###############################
-#   BASE DE DATOS
-###############################
-
-# Respaldos
-*.sql
-*.bak
-*.dump
-
-###############################
-#   PRODUCCIÓN
-###############################
 
 # Archivos finales que no deben versionarse
 *.tar.gz
