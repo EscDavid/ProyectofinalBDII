@@ -68,6 +68,7 @@ export const crearProducto = async (req, res) => {
 };
 
 export const actualizarProducto = async (req, res) => {
+  
   try {
     const id = Number(req.params.id);
 
@@ -78,7 +79,8 @@ export const actualizarProducto = async (req, res) => {
     logAction(`Producto actualizado ${id}`);
     res.json({ message: "Producto actualizado" });
 
-  } catch {
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error al actualizar producto" });
   }
 };

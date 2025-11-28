@@ -22,17 +22,25 @@ export const User = {
   },
 
   async autenticar(email, password) {
-    const [rows] = await db.query(
-      "SELECT * FROM usuarios WHERE email = ?",
-      [email]
-    );
-
-    const usuario = rows[0];
-
-    const valido = await bcrypt.compare(password, usuario.password_hash);
-
-
-    return valido ? usuario : null;
+    try {
+      const [rows] = await db.query(
+        "SELECT * FROM usuarios WHERE email = ?",
+        [email]
+      );
+  
+      
+      const usuario = rows[0];
+      if (!usuario) return null;
+  
+        
+      const valido = await bcrypt.compare(password, usuario.password_hash);
+  
+      return valido ? usuario : null;
+    } catch (error) {
+      console.error("Error en autenticación:", error);
+      return null;
+    }
   }
+  
 
 };

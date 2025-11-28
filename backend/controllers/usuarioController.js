@@ -9,7 +9,6 @@ export const loginUser = async (req, res) => {
     const usuario = await User.autenticar(email, password);
     if (!usuario) return res.status(401).json({ message: "Credenciales inválidas" });
     
-    console.log(">>> SECRET:", process.env.JWT_SECRET);
 
     const token = jwt.sign(
       { id: usuario.id_usuario, rol: usuario.id_rol },
@@ -18,11 +17,14 @@ export const loginUser = async (req, res) => {
     );
 
     logAction(`Usuario logueado: ${usuario.email}`);
-    res.json({ token, usuario: { id: usuario.id_usuario, nombre: usuario.nombre, rol: usuario.id_rol } });
+    res.json({ token, user: { id: usuario.id_usuario, nombre: usuario.nombre, rol: usuario.id_rol } });
+    
   } catch (err) {
+    console.log("Error");
     console.error("El real ",err);
     res.status(500).json({ message: "Error en autenticación"  });
   }
+  
 };
 
 export const crearUsuario = async (req, res) => {

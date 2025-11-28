@@ -1,23 +1,30 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import {
   Home,
   ShoppingCart,
   BarChart3,
   Package,
   TrendingUp,
-  Venta,
-  Producto,
-  Settings,
   LogOut,
   Menu,
   X,
   Users,
+  Ticket
 } from "lucide-react";
 
-export default function MainLayout({ children }) {
+import { useAuth } from "context/AuthContext";
+
+export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation(); 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 text-gray-800">
@@ -32,9 +39,9 @@ export default function MainLayout({ children }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-[250px] bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-[250px] bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out 
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
       >
         <div className="p-6">
           <div className="flex items-center justify-between">
@@ -42,7 +49,7 @@ export default function MainLayout({ children }) {
               <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-21">D</span>
               </div>
-              <span className="font-bold text-l">Dabang</span>
+              <span className="font-bold text-l">ElecComer</span>
             </div>
 
             <button
@@ -58,43 +65,34 @@ export default function MainLayout({ children }) {
         <nav className="flex-1 px-3 space-y-3 overflow-y-auto">
 
           <SidebarItem
-            icon={<Home size={20} />}
-            label="Dashboard"
-            to="/"
-            active={location.pathname === "/"}
+            icon={<Users size={20} />}
+            label="Administración"
+            subtitle="USUARIOS"
+            to="/user/dashboard"
+            active={location.pathname.startsWith("/user")}
             onClick={() => setSidebarOpen(false)}
           />
 
           <SidebarItem
             icon={<ShoppingCart size={20} />}
-            label="Facturación"
-            active={location.pathname.startsWith("/billing")}
+            label="Ventas"
+            to="/ventas/dashboard"
+            active={location.pathname.startsWith("/ventas")}
             onClick={() => setSidebarOpen(false)}
           />
 
           <SidebarItem
-            icon={<BarChart3 size={20} />}
-            label="Administración"
-            subtitle="USUARIOS"
-            active={location.pathname.startsWith("/admin")}
-            onClick={() => setSidebarOpen(false)}
-          />
-
-
-          {/* ✅ Tickets ahora se ilumina si estás en /tickets o /tickets/dashboard */}
-          <SidebarItem
-            icon={<Ticket size={20} />}
-            label="Tickets"
+            icon={<Package size={20} />}
+            label="Inventario"
             to="/productos/dashboard"
-            active={location.pathname.startsWith("/tickets")}
+            active={location.pathname.startsWith("/productos")}
             onClick={() => setSidebarOpen(false)}
           />
 
-        
           <SidebarItem
             icon={<LogOut size={20} />}
-            label="Sign Out"
-            onClick={() => setSidebarOpen(false)}
+            label="Cerrar Sesión"
+            onClick={handleLogout}
           />
 
         </nav>
@@ -102,10 +100,13 @@ export default function MainLayout({ children }) {
         {/* User Profile */}
         <div className="p-3 border-t border-gray-200">
           <div className="flex items-center gap-3">
-          
             <div className="flex-1 leading-tight">
-              <div className="text-sm font-medium">Fabian</div>
-              <div className="text-xs text-gray-500">Admin</div>
+              <div className="text-sm font-medium">
+                {user?.nombre || "Usuario"}
+              </div>
+              <div className="text-xs text-gray-500">
+                {user?.rol || "Rol"}
+              </div>
             </div>
           </div>
         </div>
@@ -113,6 +114,7 @@ export default function MainLayout({ children }) {
 
       {/* Contenido Principal */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+
         {/* Header móvil */}
         <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
           <button
@@ -131,7 +133,7 @@ export default function MainLayout({ children }) {
 
         {/* Contenido */}
         <main className="flex-1 overflow-auto pt-2 pb-4 px-4 lg:pt-2 lg:pb-4 lg:px-4">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
@@ -141,9 +143,9 @@ export default function MainLayout({ children }) {
 const SidebarItem = ({ icon, label, subtitle, to, active, onClick }) => {
   const content = (
     <div
-      className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors ${
-        active ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-50"
-      }`}
+      className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors 
+        ${active ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-50"}
+      `}
       onClick={onClick}
     >
       <span className={active ? "text-white" : "text-gray-600"}>{icon}</span>
