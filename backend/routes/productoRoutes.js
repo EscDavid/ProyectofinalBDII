@@ -5,22 +5,21 @@ import {
   obtenerProductosDashboard,
   obtenerProductoPorId,
   actualizarProducto,
-  registrarVenta,
-  obtenerVentas,
-  obtenerTipoProducto
+  obtenerTipoProducto,eliminarProducto
 } from "../controllers/productoController.js";
-import validarCampos from "../middlewares/validarCampos.js";
+import {validateFields} from "../middlewares/validateFields.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = Router();
 
 // Obtener productos (dashboard con paginación y filtros)
-router.get("/dashboard", obtenerProductosDashboard);
+router.get("/dashboard", verifyToken,obtenerProductosDashboard);
 
 // Obtener tipos de producto
-router.get("/productTypes", obtenerTipoProducto);
+router.get("/productTypes",  verifyToken,obtenerTipoProducto);
 
 // Obtener producto por ID
-router.get("/:id", obtenerProductoPorId);
+router.get("/:id", verifyToken, obtenerProductoPorId);
 
 // Crear producto
 router.post(
@@ -37,7 +36,7 @@ router.post(
       .isInt({ gt: 0 })
       .withMessage("Debe seleccionar un tipo de producto válido"),
   ],
-  validarCampos,
+  verifyToken,validateFields,
   crearProducto
 );
 
@@ -56,26 +55,11 @@ router.put(
       .isInt({ gt: 0 })
       .withMessage("Debe seleccionar un tipo de producto válido"),
   ],
-  validarCampos,
+  verifyToken, validateFields,
   actualizarProducto
 );
 
-// Registrar una venta
-router.post(
-  "/venta",
-  [
-    body("id_producto")
-      .isInt({ gt: 0 })
-      .withMessage("Debe indicar un producto válido"),
-    body("cantidad")
-      .isInt({ gt: 0 })
-      .withMessage("La cantidad debe ser mayor a 0"),
-  ],
-  validarCampos,
-  registrarVenta
-);
+router.delete("/:id",  verifyToken,validateFields, eliminarProducto);
 
-// Obtener historial de ventas
-router.get("/ventas/historial", obtenerVentas);
 
 export default router;

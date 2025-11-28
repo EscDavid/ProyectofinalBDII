@@ -1,6 +1,7 @@
-import app from "./app.js";
-import { logger } from "./config/logger.js";
+import app from './app.js';
+
 const PORT = process.env.SERVER_PORT || 3000;
+
 app.listen(PORT, () => {
-  logger.info(`🚀 Servidor backend escuchando en puerto ${PORT}`);
+  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });
