@@ -6,6 +6,7 @@ import {
   BarChart3,
   Package,
   TrendingUp,
+  Venta,
   Producto,
   Settings,
   LogOut,

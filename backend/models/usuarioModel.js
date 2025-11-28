@@ -1,4 +1,4 @@
-import {db}from "../config/db.js";
+import { db } from "../config/db.js";
 import bcrypt from "bcrypt";
 
 export const User = {
@@ -26,10 +26,13 @@ export const User = {
       "SELECT * FROM usuarios WHERE email = ?",
       [email]
     );
+
     const usuario = rows[0];
-    if (!usuario) return null;
 
     const valido = await bcrypt.compare(password, usuario.password_hash);
+
+
     return valido ? usuario : null;
-  },
+  }
+
 };

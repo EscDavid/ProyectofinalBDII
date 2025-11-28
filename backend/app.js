@@ -3,6 +3,10 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import productoRoutes from "./routes/productoRoutes.js";
 import ventaRoutes from "./routes/ventaRoutes.js";
+import usuarioRoutes from "./routes/usuarioRoutes.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const app = express();
 
@@ -12,7 +16,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
+app.use("/user", usuarioRoutes);
 app.use("/productos", productoRoutes);
 app.use("/ventas", ventaRoutes);
 

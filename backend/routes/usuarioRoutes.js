@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import { loginUser, crearUsuario, obtenerUsuarios } from "../controllers/usuarioController.js";
-import validarCampos from "../middlewares/validateFields.js";
-import { verificarToken } from "../middlewares/authMiddleware.js";
-import { verificarRolAdmin } from "../middlewares/roleMiddleware.js";
+import {validateFields} from "../middlewares/validateFields.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = Router();
 
@@ -13,24 +12,24 @@ router.post(
     body("email").isEmail(),
     body("password").notEmpty(),
   ],
-  validarCampos,
+  validateFields,
   loginUser
 );
 
 router.post(
-  "/",
-  verificarToken,
-  verificarRolAdmin,
+  "/register",
+  verifyToken,
   [
     body("nombre").notEmpty(),
     body("email").isEmail(),
     body("password").isLength({ min: 6 }),
     body("id_rol").isInt(),
   ],
-  validarCampos,
+  validateFields,
   crearUsuario
 );
 
-router.get("/", verificarToken, verificarRolAdmin, obtenerUsuarios);
+
+router.get("/", verifyToken, obtenerUsuarios);
 
 export default router;
